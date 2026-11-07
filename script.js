@@ -44,23 +44,37 @@ window.addEventListener('scroll', () => {
 ═══════════════════════════════════════════════════════ */
 function showTab(tabName, linkEl) {
   // Hide all pages
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-page').forEach(p => {
+    p.classList.remove('active');
+  });
+
   // Deactivate all nav links
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
   // Show target page
   const page = document.getElementById('tab-' + tabName);
-  if (page) page.classList.add('active');
+  if (page) {
+    // Force reflow so animation re-triggers
+    void page.offsetWidth;
+    page.classList.add('active');
+  }
 
-  // Activate correct nav link
+  // Activate correct nav link (checkout is hidden from nav, so nothing activates)
   const link = linkEl || document.querySelector(`.nav-link[data-tab="${tabName}"]`);
   if (link) link.classList.add('active');
 
-  // Scroll to top smoothly
+  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Close any open modals
+  // Close cart drawer
   closeCart();
+}
+
+/* ─── Go to checkout tab from cart ── */
+function goToCheckout() {
+  closeCart();
+  renderCheckout();
+  setTimeout(() => showTab('checkout'), 80);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -75,7 +89,6 @@ function openModal(productId) {
 function closeModal(overlayId) {
   const el = document.getElementById(overlayId);
   if (el) el.classList.remove('open');
-  // Only re-enable scroll if no other overlay is open
   const anyOpen = document.querySelector('.overlay.open, .cart-drawer.open');
   if (!anyOpen) document.body.style.overflow = '';
 }
@@ -91,13 +104,13 @@ function switchColour(colour, thumbEl, swatchEl) {
   const mainImg = document.getElementById('modal-img-g2');
   const label   = document.getElementById('g2-colour-label');
 
-  // Update all card images
+  // Update card images
   ['home-card-g2', 'shop-card-g2'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.src = colour + '.png';
   });
 
-  // Fade swap main
+  // Fade swap main image
   mainImg.classList.add('fade');
   setTimeout(() => {
     mainImg.src = colour + '.png';
@@ -106,12 +119,12 @@ function switchColour(colour, thumbEl, swatchEl) {
 
   if (label) label.textContent = COLOUR_NAMES[colour] || colour;
 
-  // Thumbs
+  // Update thumbs
   document.querySelectorAll('#thumbs-g2 .thumb').forEach(t => {
     t.classList.toggle('active', t.dataset.src === colour + '.png');
   });
 
-  // Swatches
+  // Update swatches
   document.querySelectorAll('.sw').forEach(s => {
     s.classList.toggle('active', s.dataset.colour === colour);
   });
@@ -158,7 +171,6 @@ function addToCart(productId, colour) {
   renderCart();
   bumpBadge();
 
-  // Close product modal, open cart
   closeModal('modal-g2');
   closeModal('modal-decal');
   setTimeout(openCart, 80);
@@ -240,6 +252,43 @@ function renderCart() {
   }
 }
 
+/* ─── RENDER CHECKOUT SUMMARY ───────────────────────── */
+function renderCheckout() {
+  const subtotal = getSubtotal();
+  const total    = getTotal();
+  const discount = getDiscount();
+
+  const itemsEl = document.getElementById('checkout-items');
+  if (!itemsEl) return;
+
+  itemsEl.innerHTML = cart.map(item => {
+    const subLabel = item.colour
+      ? COLOUR_NAMES[item.colour]
+      : (item.shipping > 0 ? `+${fmt(item.shipping)} shipping` : '');
+    return `
+      <div class="co-item">
+        <img class="co-item-img" src="${item.img}" alt="${item.name}" />
+        <div class="co-item-info">
+          <p class="co-item-name">${item.name} × ${item.qty}</p>
+          <p class="co-item-sub">${subLabel}</p>
+        </div>
+        <span class="co-item-price">${fmt(item.price * item.qty)}</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('co-subtotal').textContent = fmt(subtotal);
+  document.getElementById('co-total').textContent    = fmt(total);
+
+  const coDiscRow = document.getElementById('co-disc-row');
+  const coDiscAmt = document.getElementById('co-disc-amt');
+  if (discountApplied && discount > 0) {
+    coDiscRow.style.display = 'flex';
+    coDiscAmt.textContent   = '-' + fmt(discount);
+  } else {
+    coDiscRow.style.display = 'none';
+  }
+}
+
 /* ─── BADGE BUMP ────────────────────────────────────── */
 function bumpBadge() {
   const badge = document.getElementById('cart-count');
@@ -276,8 +325,8 @@ function setMsg(el, text, ok) {
 function submitContact(e) {
   e.preventDefault();
   e.target.innerHTML = `
-    <div style="text-align:center;padding:40px 0;color:var(--ink-muted);">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" style="margin:0 auto 16px;display:block"><polyline points="20 6 9 17 4 12"/></svg>
+    <div style="text-align:center;padding:48px 0;color:var(--ink-muted);">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" style="margin:0 auto 18px;display:block"><polyline points="20 6 9 17 4 12"/></svg>
       <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;">Message sent.</p>
       <p style="font-size:13px;">We'll get back to you within 24 hours.</p>
     </div>`;

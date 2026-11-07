@@ -32,10 +32,11 @@
         <a href="#" onclick="showTab('home',this)"><img src="Logo.png" alt="Voltx" /></a>
       </div>
       <nav class="header-nav">
-        <a class="nav-link active" data-tab="home"  onclick="showTab('home',this)">Home</a>
-        <a class="nav-link"        data-tab="shop"  onclick="showTab('shop',this)">Shop</a>
-        <a class="nav-link"        data-tab="about" onclick="showTab('about',this)">About</a>
+        <a class="nav-link active" data-tab="home"    onclick="showTab('home',this)">Home</a>
+        <a class="nav-link"        data-tab="shop"    onclick="showTab('shop',this)">Shop</a>
+        <a class="nav-link"        data-tab="about"   onclick="showTab('about',this)">About</a>
         <a class="nav-link"        data-tab="contact" onclick="showTab('contact',this)">Contact</a>
+        <!-- checkout tab intentionally excluded from nav -->
       </nav>
       <div class="header-actions">
         <button class="cart-btn" onclick="openCart()" aria-label="Cart">
@@ -50,8 +51,9 @@
     </div>
   </header>
 
-  <!-- ═══ TAB: HOME ═══════════════════════════════════ -->
+  <!-- ═══ TAB: HOME ════════════════════════════════════ -->
   <div class="tab-page active" id="tab-home">
+
     <section class="hero">
       <div class="hero-bg"></div>
       <div class="hero-vignette"></div>
@@ -93,7 +95,6 @@
       </div>
     </div>
 
-    <!-- FEATURED PRODUCTS preview on home -->
     <section class="home-featured">
       <div class="container">
         <div class="hf-head">
@@ -138,6 +139,7 @@
         </div>
       </div>
     </section>
+
   </div>
 
   <!-- ═══ TAB: SHOP ════════════════════════════════════ -->
@@ -327,9 +329,77 @@
     </section>
   </div>
 
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- MODALS                                         -->
-  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ═══ TAB: CHECKOUT (hidden from nav) ══════════════ -->
+  <div class="tab-page" id="tab-checkout">
+    <section class="checkout-page">
+      <div class="container">
+        <button class="checkout-back" onclick="showTab('shop')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Cart
+        </button>
+        <div class="checkout-layout">
+
+          <!-- LEFT: Form -->
+          <div class="checkout-form-col">
+            <div class="checkout-section">
+              <h2 class="checkout-section-title">Contact</h2>
+              <input type="email" class="field" placeholder="Email address" />
+            </div>
+            <div class="checkout-section">
+              <h2 class="checkout-section-title">Shipping</h2>
+              <div class="field-row">
+                <input type="text" class="field" placeholder="First name" />
+                <input type="text" class="field" placeholder="Last name" />
+              </div>
+              <input type="text" class="field" placeholder="Address" />
+              <div class="field-row">
+                <input type="text" class="field" placeholder="City" />
+                <input type="text" class="field" placeholder="Postcode" />
+              </div>
+              <input type="text" class="field" placeholder="Country" />
+            </div>
+            <div class="checkout-section">
+              <h2 class="checkout-section-title">Payment</h2>
+              <input type="text" class="field" placeholder="Card number" />
+              <div class="field-row">
+                <input type="text" class="field" placeholder="MM / YY" />
+                <input type="text" class="field" placeholder="CVC" />
+              </div>
+            </div>
+            <button class="btn-place-order" disabled>
+              Restocking Soon — Check Back Shortly
+            </button>
+            <p class="checkout-restock-note">All items are currently out of stock. Your order will be processed when inventory is restored.</p>
+          </div>
+
+          <!-- RIGHT: Order Summary -->
+          <div class="checkout-summary-col">
+            <h2 class="checkout-section-title">Order Summary</h2>
+            <div id="checkout-items" class="checkout-items"></div>
+            <div class="checkout-totals">
+              <div class="checkout-totals-row">
+                <span>Subtotal</span>
+                <span id="co-subtotal">€0.00</span>
+              </div>
+              <div class="checkout-totals-row checkout-disc-row" id="co-disc-row" style="display:none;">
+                <span>Discount (20%)</span>
+                <span id="co-disc-amt" class="green">-€0.00</span>
+              </div>
+              <div class="checkout-totals-row checkout-totals-total">
+                <span>Total</span>
+                <span id="co-total">€0.00</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODALS
+  ═══════════════════════════════════════════════════ -->
 
   <!-- G2 STICKERS MODAL -->
   <div class="overlay" id="modal-g2" onclick="closeOverlay(event,'modal-g2')">
@@ -442,10 +512,6 @@
       <div id="cart-items"></div>
     </div>
     <div class="cart-foot" id="cart-foot" style="display:none;">
-      <div class="out-of-stock-notice">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Items are currently out of stock. Checkout will open when restocked.
-      </div>
       <div class="discount-wrap">
         <div class="discount-row">
           <input type="text" id="discount-input" class="field" placeholder="Discount code" />
@@ -460,8 +526,8 @@
         </div>
         <div class="totals-row totals-total"><span>Total</span><span id="cart-total">€0.00</span></div>
       </div>
-      <button class="btn-checkout-disabled" disabled>Checkout Unavailable — Out of Stock</button>
-      <p class="cart-note">We'll notify you when items are back in stock.</p>
+      <button class="btn-checkout" onclick="goToCheckout()">Proceed to Checkout</button>
+      <p class="cart-restock-pill">Items restock soon</p>
     </div>
   </aside>
 
