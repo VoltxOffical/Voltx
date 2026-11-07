@@ -8,7 +8,7 @@ const DISCOUNT_PCT  = 0.20;
 const PRODUCTS = {
   g2: {
     name: 'G2 Stickers',
-    price: 20.00,
+    price: 15.00,
     shipping: 0,
     img: 'black.png',
   },
@@ -17,6 +17,12 @@ const PRODUCTS = {
     price: 10.00,
     shipping: 3.00,
     img: 'Frontdecal.png',
+  },
+  s1: {
+    name: 'S1 Max Front Decal',
+    price: 5.00,
+    shipping: 0,
+    img: 'whites1.png',
   }
 };
 
@@ -28,6 +34,7 @@ const COLOUR_NAMES = {
 let cart            = [];
 let discountApplied = false;
 let activeG2Colour  = 'black';
+let activeS1Colour  = 'white';
 
 /* ─── MOBILE NAV ────────────────────────────────────── */
 function toggleMobileMenu() {
@@ -96,7 +103,9 @@ function goToCheckout() {
    MODALS
 ═══════════════════════════════════════════════════════ */
 function openModal(productId) {
-  const id = productId === 'g2' ? 'modal-g2' : 'modal-decal';
+  const idMap = { g2: 'modal-g2', decal: 'modal-decal', s1: 'modal-s1' };
+  const id = idMap[productId];
+  if (!id) return;
   document.getElementById(id).classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -145,6 +154,40 @@ function switchColour(colour, thumbEl, swatchEl) {
   });
 }
 
+/* ─── S1 COLOUR SWITCHER ────────────────────────────── */
+function switchS1Colour(colour, thumbEl, swatchEl) {
+  activeS1Colour = colour;
+
+  const mainImg = document.getElementById('modal-img-s1');
+  const label   = document.getElementById('s1-colour-label');
+  const imgFile = colour + 's1.png';
+
+  // Update card images
+  ['home-card-s1', 'shop-card-s1'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.src = imgFile;
+  });
+
+  // Fade swap
+  mainImg.classList.add('fade');
+  setTimeout(() => {
+    mainImg.src = imgFile;
+    mainImg.classList.remove('fade');
+  }, 160);
+
+  if (label) label.textContent = COLOUR_NAMES[colour] || colour;
+
+  // Thumbs
+  document.querySelectorAll('#thumbs-s1 .thumb').forEach(t => {
+    t.classList.toggle('active', t.dataset.src === imgFile);
+  });
+
+  // Swatches — only update within the s1 modal
+  document.querySelectorAll('#modal-s1 .sw').forEach(s => {
+    s.classList.toggle('active', s.dataset.colour === colour);
+  });
+}
+
 /* ═══════════════════════════════════════════════════════
    CART
 ═══════════════════════════════════════════════════════ */
@@ -165,9 +208,19 @@ function addToCart(productId, colour) {
   const product = PRODUCTS[productId];
   if (!product) return;
 
-  const key = productId === 'g2' ? `g2-${colour}` : 'decal';
-  const existing = cart.find(i => i.key === key);
+  let key, img;
+  if (productId === 'g2') {
+    key = `g2-${colour}`;
+    img = colour + '.png';
+  } else if (productId === 's1') {
+    key = `s1-${colour}`;
+    img = colour + 's1.png';
+  } else {
+    key = productId;
+    img = product.img;
+  }
 
+  const existing = cart.find(i => i.key === key);
   if (existing) {
     existing.qty++;
   } else {
@@ -177,8 +230,8 @@ function addToCart(productId, colour) {
       name: product.name,
       price: product.price,
       shipping: product.shipping,
-      img: productId === 'g2' ? colour + '.png' : product.img,
-      colour: productId === 'g2' ? colour : null,
+      img,
+      colour: (productId === 'g2' || productId === 's1') ? colour : null,
       qty: 1
     });
   }
@@ -188,6 +241,7 @@ function addToCart(productId, colour) {
 
   closeModal('modal-g2');
   closeModal('modal-decal');
+  closeModal('modal-s1');
   setTimeout(openCart, 80);
 }
 
@@ -339,7 +393,7 @@ function setMsg(el, text, ok) {
 /* ─── KEYBOARD ──────────────────────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  ['modal-g2', 'modal-decal', 'success-overlay'].forEach(closeModal);
+  ['modal-g2', 'modal-decal', 'modal-s1', 'success-overlay'].forEach(closeModal);
   closeCart();
   const mobileNav = document.getElementById('mobile-nav');
   if (mobileNav?.classList.contains('open')) toggleMobileMenu();

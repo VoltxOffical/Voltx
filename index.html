@@ -136,7 +136,7 @@
             </div>
             <div class="product-meta">
               <div><h3>G2 Stickers</h3><p class="product-sub">6 colours</p></div>
-              <div class="product-price-wrap"><span class="product-price">€20</span></div>
+              <div class="product-price-wrap"><span class="product-price">€15</span></div>
             </div>
           </div>
           <div class="product-card" onclick="openModal('decal')">
@@ -156,6 +156,20 @@
               </div>
             </div>
           </div>
+          <div class="product-card" onclick="openModal('s1')">
+            <div class="product-img-wrap">
+              <img id="home-card-s1" src="whites1.png" alt="S1 Max Front Decal" />
+              <div class="card-tags">
+                <span class="tag tag-new">New</span>
+                <span class="tag tag-out">Sold Out</span>
+              </div>
+              <div class="card-hover-cta">View Product</div>
+            </div>
+            <div class="product-meta">
+              <div><h3>S1 Max Front Decal</h3><p class="product-sub">4 colours</p></div>
+              <div class="product-price-wrap"><span class="product-price">€5</span></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -171,7 +185,7 @@
             <p class="eyebrow">The Collection</p>
             <h2>All Products</h2>
           </div>
-          <p class="section-count">2 products</p>
+          <p class="section-count">3 products</p>
         </div>
         <div class="product-grid">
           <div class="product-card" onclick="openModal('g2')">
@@ -185,7 +199,7 @@
             </div>
             <div class="product-meta">
               <div><h3>G2 Stickers</h3><p class="product-sub">6 colours available</p></div>
-              <div class="product-price-wrap"><span class="product-price">€20</span></div>
+              <div class="product-price-wrap"><span class="product-price">€15</span></div>
             </div>
           </div>
           <div class="product-card" onclick="openModal('decal')">
@@ -203,6 +217,20 @@
                 <span class="product-price">€10</span>
                 <span class="product-ship">+€3 shipping</span>
               </div>
+            </div>
+          </div>
+          <div class="product-card" onclick="openModal('s1')">
+            <div class="product-img-wrap">
+              <img id="shop-card-s1" src="whites1.png" alt="S1 Max Front Decal" />
+              <div class="card-tags">
+                <span class="tag tag-new">New</span>
+                <span class="tag tag-out">Sold Out</span>
+              </div>
+              <div class="card-hover-cta">View Product</div>
+            </div>
+            <div class="product-meta">
+              <div><h3>S1 Max Front Decal</h3><p class="product-sub">4 colours available</p></div>
+              <div class="product-price-wrap"><span class="product-price">€5</span></div>
             </div>
           </div>
         </div>
@@ -408,7 +436,7 @@
           <p class="modal-brand">Voltx</p>
           <h2 class="modal-title">G2 Stickers</h2>
           <div class="modal-price-row">
-            <span class="modal-price">€20.00</span>
+            <span class="modal-price">€15.00</span>
             <span class="sold-pill">Sold Out</span>
           </div>
           <div class="option-group">
@@ -465,6 +493,57 @@
             <p>Precision-cut front plate decal designed for G2 and G4 controllers. Clean fitment, zero air bubbles.</p>
             <ul class="feat-list">
               <li>Precision-cut for G2 &amp; G4</li>
+              <li>Air-release adhesive</li>
+              <li>Residue-free removal</li>
+              <li>High-gloss finish</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S1 MAX FRONT DECAL MODAL -->
+  <div class="overlay" id="modal-s1" onclick="closeOverlay(event,'modal-s1')">
+    <div class="modal" role="dialog">
+      <button class="modal-x" onclick="closeModal('modal-s1')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="modal-layout">
+        <div class="modal-gallery">
+          <div class="gallery-main">
+            <img id="modal-img-s1" src="whites1.png" alt="S1 Max Front Decal" />
+          </div>
+          <div class="gallery-thumbs" id="thumbs-s1">
+            <button class="thumb white-thumb active" onclick="switchS1Colour('white',this)" data-src="whites1.png"><img src="whites1.png" alt="White"/></button>
+            <button class="thumb" onclick="switchS1Colour('red',this)" data-src="reds1.png"><img src="reds1.png" alt="Red"/></button>
+            <button class="thumb" onclick="switchS1Colour('blue',this)" data-src="blues1.png"><img src="blues1.png" alt="Blue"/></button>
+            <button class="thumb" onclick="switchS1Colour('pink',this)" data-src="pinks1.png"><img src="pinks1.png" alt="Pink"/></button>
+          </div>
+        </div>
+        <div class="modal-info">
+          <p class="modal-brand">Voltx</p>
+          <h2 class="modal-title">S1 Max Front Decal</h2>
+          <p class="modal-compat">S1 Max Compatible</p>
+          <div class="modal-price-row">
+            <span class="modal-price">€5.00</span>
+            <span class="sold-pill">Sold Out</span>
+          </div>
+          <div class="option-group">
+            <p class="option-label">Colour <span id="s1-colour-label">White</span></p>
+            <div class="swatches">
+              <button class="sw sw-white active" data-colour="white" title="White" onclick="switchS1Colour('white',null,this)"></button>
+              <button class="sw sw-red"          data-colour="red"   title="Red"   onclick="switchS1Colour('red',null,this)"></button>
+              <button class="sw sw-blue"         data-colour="blue"  title="Blue"  onclick="switchS1Colour('blue',null,this)"></button>
+              <button class="sw sw-pink"         data-colour="pink"  title="Pink"  onclick="switchS1Colour('pink',null,this)"></button>
+            </div>
+          </div>
+          <button class="btn-add-cart" onclick="addToCart('s1', activeS1Colour)">Add to Cart</button>
+          <p class="restock-msg">Currently out of stock — added to cart for when we restock.</p>
+          <div class="modal-details">
+            <p>Precision-cut front decal designed for the S1 Max. Clean fitment, air-release adhesive, residue-free removal.</p>
+            <ul class="feat-list">
+              <li>Precision-cut for S1 Max</li>
               <li>Air-release adhesive</li>
               <li>Residue-free removal</li>
               <li>High-gloss finish</li>
