@@ -336,17 +336,6 @@ function setMsg(el, text, ok) {
   el.className   = 'disc-msg ' + (ok ? 'ok' : 'err');
 }
 
-/* ─── CONTACT FORM ──────────────────────────────────── */
-function submitContact(e) {
-  e.preventDefault();
-  e.target.innerHTML = `
-    <div style="text-align:center;padding:48px 0;color:var(--ink-muted);">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" style="margin:0 auto 18px;display:block"><polyline points="20 6 9 17 4 12"/></svg>
-      <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;">Message sent.</p>
-      <p style="font-size:13px;">We'll get back to you within 24 hours.</p>
-    </div>`;
-}
-
 /* ─── KEYBOARD ──────────────────────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;

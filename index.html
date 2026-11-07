@@ -38,8 +38,6 @@
         <a class="nav-link active" data-tab="home"    onclick="showTab('home',this)">Home</a>
         <a class="nav-link"        data-tab="shop"    onclick="showTab('shop',this)">Shop</a>
         <a class="nav-link"        data-tab="about"   onclick="showTab('about',this)">About</a>
-        <a class="nav-link"        data-tab="contact" onclick="showTab('contact',this)">Contact</a>
-        <!-- checkout tab intentionally excluded from nav -->
       </nav>
       <div class="header-actions">
         <button class="cart-btn" onclick="openCart()" aria-label="Cart">
@@ -66,7 +64,6 @@
       <a onclick="showTab('home');toggleMobileMenu()">Home</a>
       <a onclick="showTab('shop');toggleMobileMenu()">Shop</a>
       <a onclick="showTab('about');toggleMobileMenu()">About</a>
-      <a onclick="showTab('contact');toggleMobileMenu()">Contact</a>
     </nav>
     <div class="mobile-nav-footer">
       <p>© 2026 Voltx</p>
@@ -315,43 +312,6 @@
 
   </div>
 
-  <!-- ═══ TAB: CONTACT ═════════════════════════════════ -->
-  <div class="tab-page" id="tab-contact">
-    <section class="contact-page">
-      <div class="container">
-        <div class="contact-grid">
-          <div class="contact-left">
-            <p class="eyebrow">Get in Touch</p>
-            <h2>We're here<br>when you need us.</h2>
-            <p>Have a question about an order, product, or just want to talk shop? Send us a message and we'll get back to you within 24 hours.</p>
-            <div class="contact-info">
-              <div class="ci-row">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <span>support@voltx.store</span>
-              </div>
-              <div class="ci-row">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 2H3v16h5l4 4 4-4h5V2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg>
-                <span>Replies within 24 hours</span>
-              </div>
-            </div>
-          </div>
-          <div class="contact-right">
-            <form class="contact-form" onsubmit="submitContact(event)">
-              <div class="field-row">
-                <input type="text" class="field" placeholder="First name" required />
-                <input type="text" class="field" placeholder="Last name" required />
-              </div>
-              <input type="email" class="field" placeholder="Email address" required />
-              <input type="text" class="field" placeholder="Subject" />
-              <textarea class="field" placeholder="Your message..." rows="5" required></textarea>
-              <button type="submit" class="btn-fill w100">Send Message</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-
   <!-- ═══ TAB: CHECKOUT (hidden from nav) ══════════════ -->
   <div class="tab-page" id="tab-checkout">
     <section class="checkout-page">
@@ -584,7 +544,6 @@
         <div class="footer-col">
           <h4>Company</h4>
           <a href="#" onclick="showTab('about')">About</a>
-          <a href="#" onclick="showTab('contact')">Contact</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>

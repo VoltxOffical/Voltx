@@ -938,8 +938,9 @@ header.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
 
 .thumb img { width: 100%; height: 100%; object-fit: contain; }
 
-.white-thumb { border-color: #c8c8d0; }
-.white-thumb img { outline: 1px solid #ddd; outline-offset: -1px; }
+.white-thumb { border-color: #b8b8c0 !important; }
+.white-thumb img { outline: 1px solid #ccc; outline-offset: -1px; }
+.white-thumb.active { border-color: var(--ink) !important; }
 
 .thumb:hover  { border-color: var(--ink-muted); transform: translateY(-1px); }
 .thumb.active { border-color: var(--ink); }
@@ -1033,18 +1034,44 @@ header.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
   border: 2.5px solid transparent;
   cursor: pointer;
   outline: none;
+  -webkit-appearance: none;
+  appearance: none;
   transition: transform 0.16s var(--ease), box-shadow 0.16s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.sw:hover { transform: scale(1.12); }
-.sw.active { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink); }
+.sw:hover  { transform: scale(1.12); }
+.sw:active { transform: scale(0.95); }
 
-.sw-black  { background: #0c0c0e; }
-.sw-red    { background: #d62828; }
-.sw-white  { background: #f0f0f0; border-color: #ccc; }
-.sw-blue   { background: #1a6fdb; }
-.sw-purple { background: #7c3aed; }
-.sw-pink   { background: #e84393; }
+/* Default active ring — dark outline */
+.sw.active {
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--ink);
+}
+
+.sw-black  {
+  background: #0c0c0e !important;
+  border-color: transparent;
+}
+
+/* Black active ring needs lighter contrast since swatch is dark */
+.sw-black.active {
+  box-shadow: 0 0 0 2.5px #ffffff, 0 0 0 5px #0c0c0e;
+}
+
+.sw-red    { background: #d62828 !important; }
+.sw-white  {
+  background: #f5f5f5 !important;
+  border-color: #bbb !important;
+}
+
+/* White active ring needs a visible dark outline */
+.sw-white.active {
+  box-shadow: 0 0 0 2.5px #d0d0d0, 0 0 0 5px #0c0c0e;
+}
+
+.sw-blue   { background: #1a6fdb !important; }
+.sw-purple { background: #7c3aed !important; }
+.sw-pink   { background: #e84393 !important; }
 
 /* ─── ADD TO CART BUTTON — full width, black, no radius ── */
 .btn-add-cart {
@@ -1846,7 +1873,7 @@ footer {
   .btn-checkout,
   .btn-apply        { min-height: 48px; }
   .qty-btn          { width: 36px; height: 36px; }
-  .sw               { width: 34px; height: 34px; }
+  .sw               { width: 36px; height: 36px; -webkit-appearance: none; appearance: none; }
   .nav-link,
   .mobile-nav-links a { min-height: 44px; display: flex; align-items: center; }
 }
