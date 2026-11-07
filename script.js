@@ -1,0 +1,294 @@
+/* ═══════════════════════════════════════════════════════
+   VOLTX — SCRIPT
+═══════════════════════════════════════════════════════ */
+
+const DISCOUNT_CODE = 'zenzirl';
+const DISCOUNT_PCT  = 0.20;
+
+const PRODUCTS = {
+  g2: {
+    name: 'G2 Stickers',
+    price: 20.00,
+    shipping: 0,
+    img: 'black.png',
+  },
+  decal: {
+    name: 'Front Plate Decal',
+    price: 10.00,
+    shipping: 3.00,
+    img: 'Frontdecal.png',
+  }
+};
+
+const COLOUR_NAMES = {
+  black: 'Black', red: 'Red', white: 'White',
+  blue: 'Blue', purple: 'Purple', pink: 'Pink'
+};
+
+let cart            = [];
+let discountApplied = false;
+let activeG2Colour  = 'black';
+
+/* ─── HERO INIT ─────────────────────────────────────── */
+window.addEventListener('load', () => {
+  document.querySelector('.hero')?.classList.add('loaded');
+});
+
+/* ─── HEADER SCROLL ─────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════
+   TAB NAVIGATION
+═══════════════════════════════════════════════════════ */
+function showTab(tabName, linkEl) {
+  // Hide all pages
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  // Deactivate all nav links
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+  // Show target page
+  const page = document.getElementById('tab-' + tabName);
+  if (page) page.classList.add('active');
+
+  // Activate correct nav link
+  const link = linkEl || document.querySelector(`.nav-link[data-tab="${tabName}"]`);
+  if (link) link.classList.add('active');
+
+  // Scroll to top smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Close any open modals
+  closeCart();
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════════ */
+function openModal(productId) {
+  const id = productId === 'g2' ? 'modal-g2' : 'modal-decal';
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(overlayId) {
+  const el = document.getElementById(overlayId);
+  if (el) el.classList.remove('open');
+  // Only re-enable scroll if no other overlay is open
+  const anyOpen = document.querySelector('.overlay.open, .cart-drawer.open');
+  if (!anyOpen) document.body.style.overflow = '';
+}
+
+function closeOverlay(event, id) {
+  if (event.target === document.getElementById(id)) closeModal(id);
+}
+
+/* ─── COLOUR SWITCHER ───────────────────────────────── */
+function switchColour(colour, thumbEl, swatchEl) {
+  activeG2Colour = colour;
+
+  const mainImg = document.getElementById('modal-img-g2');
+  const label   = document.getElementById('g2-colour-label');
+
+  // Update all card images
+  ['home-card-g2', 'shop-card-g2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.src = colour + '.png';
+  });
+
+  // Fade swap main
+  mainImg.classList.add('fade');
+  setTimeout(() => {
+    mainImg.src = colour + '.png';
+    mainImg.classList.remove('fade');
+  }, 160);
+
+  if (label) label.textContent = COLOUR_NAMES[colour] || colour;
+
+  // Thumbs
+  document.querySelectorAll('#thumbs-g2 .thumb').forEach(t => {
+    t.classList.toggle('active', t.dataset.src === colour + '.png');
+  });
+
+  // Swatches
+  document.querySelectorAll('.sw').forEach(s => {
+    s.classList.toggle('active', s.dataset.colour === colour);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   CART
+═══════════════════════════════════════════════════════ */
+function openCart() {
+  document.getElementById('cart-drawer').classList.add('open');
+  document.getElementById('cart-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.getElementById('cart-backdrop').classList.remove('open');
+  const anyOpen = document.querySelector('.overlay.open');
+  if (!anyOpen) document.body.style.overflow = '';
+}
+
+function addToCart(productId, colour) {
+  const product = PRODUCTS[productId];
+  if (!product) return;
+
+  const key = productId === 'g2' ? `g2-${colour}` : 'decal';
+  const existing = cart.find(i => i.key === key);
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({
+      key,
+      productId,
+      name: product.name,
+      price: product.price,
+      shipping: product.shipping,
+      img: productId === 'g2' ? colour + '.png' : product.img,
+      colour: productId === 'g2' ? colour : null,
+      qty: 1
+    });
+  }
+
+  renderCart();
+  bumpBadge();
+
+  // Close product modal, open cart
+  closeModal('modal-g2');
+  closeModal('modal-decal');
+  setTimeout(openCart, 80);
+}
+
+function changeQty(key, delta) {
+  const item = cart.find(i => i.key === key);
+  if (!item) return;
+  item.qty = Math.max(0, item.qty + delta);
+  if (item.qty === 0) cart = cart.filter(i => i.key !== key);
+  renderCart();
+}
+
+function getSubtotal() {
+  return cart.reduce((s, i) => s + (i.price + i.shipping) * i.qty, 0);
+}
+
+function getDiscount() {
+  return discountApplied ? getSubtotal() * DISCOUNT_PCT : 0;
+}
+
+function getTotal() { return getSubtotal() - getDiscount(); }
+
+function fmt(n) { return '€' + n.toFixed(2); }
+
+/* ─── RENDER CART ───────────────────────────────────── */
+function renderCart() {
+  const count    = cart.reduce((s, i) => s + i.qty, 0);
+  const subtotal = getSubtotal();
+  const total    = getTotal();
+  const discount = getDiscount();
+
+  document.getElementById('cart-count').textContent = count;
+
+  const emptyEl = document.getElementById('cart-empty');
+  const itemsEl = document.getElementById('cart-items');
+  const footEl  = document.getElementById('cart-foot');
+
+  if (cart.length === 0) {
+    emptyEl.style.display = 'flex';
+    itemsEl.innerHTML     = '';
+    footEl.style.display  = 'none';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  footEl.style.display  = 'block';
+
+  itemsEl.innerHTML = cart.map(item => {
+    const subLabel = item.colour
+      ? COLOUR_NAMES[item.colour]
+      : (item.shipping > 0 ? `+${fmt(item.shipping)} shipping` : '');
+    return `
+      <div class="cart-item">
+        <img class="c-item-img" src="${item.img}" alt="${item.name}" />
+        <div class="c-item-info">
+          <p class="c-item-name">${item.name}</p>
+          <p class="c-item-sub">${subLabel}</p>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changeQty('${item.key}',-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${item.key}',1)">+</button>
+          </div>
+        </div>
+        <span class="c-item-price">${fmt(item.price * item.qty)}</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('cart-sub').textContent   = fmt(subtotal);
+  document.getElementById('cart-total').textContent = fmt(total);
+
+  const discRow = document.getElementById('disc-row');
+  const discAmt = document.getElementById('disc-amt');
+  if (discountApplied && discount > 0) {
+    discRow.style.display = 'flex';
+    discAmt.textContent   = '-' + fmt(discount);
+  } else {
+    discRow.style.display = 'none';
+  }
+}
+
+/* ─── BADGE BUMP ────────────────────────────────────── */
+function bumpBadge() {
+  const badge = document.getElementById('cart-count');
+  badge.classList.remove('bump');
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+  setTimeout(() => badge.classList.remove('bump'), 300);
+}
+
+/* ─── DISCOUNT ──────────────────────────────────────── */
+function applyDiscount() {
+  const input = document.getElementById('discount-input');
+  const msg   = document.getElementById('discount-msg');
+  const code  = input.value.trim().toLowerCase();
+
+  if (!code) { setMsg(msg, 'Enter a discount code.', false); return; }
+
+  if (code === DISCOUNT_CODE) {
+    discountApplied = true;
+    input.value = '';
+    setMsg(msg, '20% discount applied.', true);
+    renderCart();
+  } else {
+    setMsg(msg, 'Invalid or expired code.', false);
+  }
+}
+
+function setMsg(el, text, ok) {
+  el.textContent = text;
+  el.className   = 'disc-msg ' + (ok ? 'ok' : 'err');
+}
+
+/* ─── CONTACT FORM ──────────────────────────────────── */
+function submitContact(e) {
+  e.preventDefault();
+  e.target.innerHTML = `
+    <div style="text-align:center;padding:40px 0;color:var(--ink-muted);">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" style="margin:0 auto 16px;display:block"><polyline points="20 6 9 17 4 12"/></svg>
+      <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;">Message sent.</p>
+      <p style="font-size:13px;">We'll get back to you within 24 hours.</p>
+    </div>`;
+}
+
+/* ─── KEYBOARD ──────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  ['modal-g2', 'modal-decal', 'success-overlay'].forEach(closeModal);
+  closeCart();
+});
+
+/* ─── INIT ──────────────────────────────────────────── */
+renderCart();
