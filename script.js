@@ -29,7 +29,20 @@ let cart            = [];
 let discountApplied = false;
 let activeG2Colour  = 'black';
 
-/* ─── HERO INIT ─────────────────────────────────────── */
+/* ─── MOBILE NAV ────────────────────────────────────── */
+function toggleMobileMenu() {
+  const nav      = document.getElementById('mobile-nav');
+  const backdrop = document.getElementById('mobile-nav-backdrop');
+  const burger   = document.getElementById('hamburger');
+  const isOpen   = nav.classList.contains('open');
+
+  nav.classList.toggle('open', !isOpen);
+  backdrop.classList.toggle('open', !isOpen);
+  burger.classList.toggle('open', !isOpen);
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+
+
 window.addEventListener('load', () => {
   document.querySelector('.hero')?.classList.add('loaded');
 });
@@ -66,8 +79,10 @@ function showTab(tabName, linkEl) {
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Close cart drawer
+  // Close cart drawer and mobile nav
   closeCart();
+  const mobileNav = document.getElementById('mobile-nav');
+  if (mobileNav?.classList.contains('open')) toggleMobileMenu();
 }
 
 /* ─── Go to checkout tab from cart ── */
@@ -337,6 +352,8 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   ['modal-g2', 'modal-decal', 'success-overlay'].forEach(closeModal);
   closeCart();
+  const mobileNav = document.getElementById('mobile-nav');
+  if (mobileNav?.classList.contains('open')) toggleMobileMenu();
 });
 
 /* ─── INIT ──────────────────────────────────────────── */
