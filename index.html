@@ -125,12 +125,12 @@
           <button class="btn-text-arrow" onclick="showTab('shop')">View All <span>→</span></button>
         </div>
         <div class="product-grid">
-          <div class="product-card" onclick="openModal('g2')">
+          <div class="product-card" data-product="g2" onclick="openModal('g2')">
             <div class="product-img-wrap">
               <img id="home-card-g2" src="black.png" alt="G2 Stickers" />
               <div class="card-tags">
                 <span class="tag tag-new">New</span>
-                <span class="tag tag-out">Sold Out</span>
+                <span class="tag tag-in">In Stock</span>
               </div>
               <div class="card-hover-cta">View Product</div>
             </div>
@@ -139,12 +139,12 @@
               <div class="product-price-wrap"><span class="product-price">€15</span></div>
             </div>
           </div>
-          <div class="product-card" onclick="openModal('decal')">
+          <div class="product-card" data-product="decal" onclick="openModal('decal')">
             <div class="product-img-wrap">
               <img src="Frontdecal.png" alt="Front Plate Decal" />
               <div class="card-tags">
                 <span class="tag tag-new">New</span>
-                <span class="tag tag-out">Sold Out</span>
+                <span class="tag tag-in">In Stock</span>
               </div>
               <div class="card-hover-cta">View Product</div>
             </div>
@@ -156,7 +156,7 @@
               </div>
             </div>
           </div>
-          <div class="product-card" onclick="openModal('s1')">
+          <div class="product-card" data-product="s1" onclick="openModal('s1')">
             <div class="product-img-wrap">
               <img id="home-card-s1" src="whites1.png" alt="S1 Max Front Decal" />
               <div class="card-tags">
@@ -188,12 +188,12 @@
           <p class="section-count">3 products</p>
         </div>
         <div class="product-grid">
-          <div class="product-card" onclick="openModal('g2')">
+          <div class="product-card" data-product="g2" onclick="openModal('g2')">
             <div class="product-img-wrap">
               <img id="shop-card-g2" src="black.png" alt="G2 Stickers" />
               <div class="card-tags">
                 <span class="tag tag-new">New</span>
-                <span class="tag tag-out">Sold Out</span>
+                <span class="tag tag-in">In Stock</span>
               </div>
               <div class="card-hover-cta">View Product</div>
             </div>
@@ -202,12 +202,12 @@
               <div class="product-price-wrap"><span class="product-price">€15</span></div>
             </div>
           </div>
-          <div class="product-card" onclick="openModal('decal')">
+          <div class="product-card" data-product="decal" onclick="openModal('decal')">
             <div class="product-img-wrap">
               <img src="Frontdecal.png" alt="Front Plate Decal G2/G4" />
               <div class="card-tags">
                 <span class="tag tag-new">New</span>
-                <span class="tag tag-out">Sold Out</span>
+                <span class="tag tag-in">In Stock</span>
               </div>
               <div class="card-hover-cta">View Product</div>
             </div>
@@ -219,7 +219,7 @@
               </div>
             </div>
           </div>
-          <div class="product-card" onclick="openModal('s1')">
+          <div class="product-card" data-product="s1" onclick="openModal('s1')">
             <div class="product-img-wrap">
               <img id="shop-card-s1" src="whites1.png" alt="S1 Max Front Decal" />
               <div class="card-tags">
@@ -377,10 +377,10 @@
                 <input type="text" class="field" placeholder="CVC" />
               </div>
             </div>
-            <button class="btn-place-order" disabled>
-              Restocking Soon — Check Back Shortly
+            <button class="btn-place-order" onclick="placeOrder()">
+              Place Order
             </button>
-            <p class="checkout-restock-note">All items are currently out of stock. Your order will be processed when inventory is restored.</p>
+            <p class="checkout-restock-note">By placing your order you agree to our terms of service.</p>
           </div>
 
           <!-- RIGHT: Order Summary -->
@@ -437,7 +437,7 @@
           <h2 class="modal-title">G2 Stickers</h2>
           <div class="modal-price-row">
             <span class="modal-price">€15.00</span>
-            <span class="sold-pill">Sold Out</span>
+            <span class="sold-pill" id="pill-g2" style="display:none;">Sold Out</span>
           </div>
           <div class="option-group">
             <p class="option-label">Colour <span id="g2-colour-label">Black</span></p>
@@ -450,8 +450,8 @@
               <button class="sw sw-pink"   data-colour="pink"   title="Pink"   onclick="switchColour('pink',null,this)"></button>
             </div>
           </div>
-          <button class="btn-add-cart" onclick="addToCart('g2', activeG2Colour)">Add to Cart</button>
-          <p class="restock-msg">Currently out of stock — added to cart for when we restock.</p>
+          <button id="btn-cart-g2" class="btn-add-cart" onclick="addToCart('g2', activeG2Colour)">Add to Cart</button>
+          <p id="restock-g2" class="restock-msg" style="display:none;">Currently out of stock — check back soon.</p>
           <div class="modal-details">
             <p>Premium weatherproof vinyl stickers. Scratch-resistant, UV-protected, built for any surface.</p>
             <ul class="feat-list">
@@ -485,10 +485,10 @@
           <div class="modal-price-row">
             <span class="modal-price">€10.00</span>
             <span class="modal-ship-note">+€3 shipping</span>
-            <span class="sold-pill">Sold Out</span>
+            <span class="sold-pill" id="pill-decal" style="display:none;">Sold Out</span>
           </div>
-          <button class="btn-add-cart" onclick="addToCart('decal', null)">Add to Cart</button>
-          <p class="restock-msg">Currently out of stock — added to cart for when we restock.</p>
+          <button id="btn-cart-decal" class="btn-add-cart" onclick="addToCart('decal', null)">Add to Cart</button>
+          <p id="restock-decal" class="restock-msg" style="display:none;">Currently out of stock — check back soon.</p>
           <div class="modal-details">
             <p>Precision-cut front plate decal designed for G2 and G4 controllers. Clean fitment, zero air bubbles.</p>
             <ul class="feat-list">
@@ -527,7 +527,7 @@
           <p class="modal-compat">S1 Max Compatible</p>
           <div class="modal-price-row">
             <span class="modal-price">€5.00</span>
-            <span class="sold-pill">Sold Out</span>
+            <span class="sold-pill" id="pill-s1">Sold Out</span>
           </div>
           <div class="option-group">
             <p class="option-label">Colour <span id="s1-colour-label">White</span></p>
@@ -538,8 +538,8 @@
               <button class="sw sw-pink"         data-colour="pink"  title="Pink"  onclick="switchS1Colour('pink',null,this)"></button>
             </div>
           </div>
-          <button class="btn-add-cart" onclick="addToCart('s1', activeS1Colour)">Add to Cart</button>
-          <p class="restock-msg">Currently out of stock — added to cart for when we restock.</p>
+          <button id="btn-cart-s1" class="btn-add-cart btn-oos" disabled>Out of Stock</button>
+          <p id="restock-s1" class="restock-msg">Currently out of stock — check back soon.</p>
           <div class="modal-details">
             <p>Precision-cut front decal designed for the S1 Max. Clean fitment, air-release adhesive, residue-free removal.</p>
             <ul class="feat-list">
