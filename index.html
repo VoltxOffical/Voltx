@@ -354,33 +354,33 @@
           <div class="checkout-form-col">
             <div class="checkout-section">
               <h2 class="checkout-section-title">Contact</h2>
-              <input type="email" class="field" placeholder="Email address" />
+              <input id="co-email" type="email" class="field" placeholder="Email address" required />
             </div>
             <div class="checkout-section">
               <h2 class="checkout-section-title">Shipping</h2>
               <div class="field-row">
-                <input type="text" class="field" placeholder="First name" />
-                <input type="text" class="field" placeholder="Last name" />
+                <input id="co-first" type="text" class="field" placeholder="First name" required />
+                <input id="co-last"  type="text" class="field" placeholder="Last name"  required />
               </div>
-              <input type="text" class="field" placeholder="Address" />
+              <input id="co-address"  type="text" class="field" placeholder="Address"  required />
               <div class="field-row">
-                <input type="text" class="field" placeholder="City" />
-                <input type="text" class="field" placeholder="Postcode" />
+                <input id="co-city"     type="text" class="field" placeholder="City"     required />
+                <input id="co-postcode" type="text" class="field" placeholder="Postcode" required />
               </div>
-              <input type="text" class="field" placeholder="Country" />
+              <input id="co-country" type="text" class="field" placeholder="Country" required />
             </div>
             <div class="checkout-section">
-              <h2 class="checkout-section-title">Payment</h2>
-              <input type="text" class="field" placeholder="Card number" />
-              <div class="field-row">
-                <input type="text" class="field" placeholder="MM / YY" />
-                <input type="text" class="field" placeholder="CVC" />
+              <h2 class="checkout-section-title">Discount Code</h2>
+              <div class="discount-row">
+                <input type="text" id="co-discount-input" class="field" placeholder="Discount code" />
+                <button class="btn-apply" onclick="applyCoDiscount()">Apply</button>
               </div>
+              <p class="disc-msg" id="co-discount-msg"></p>
             </div>
-            <button class="btn-place-order" onclick="placeOrder()">
+            <button class="btn-place-order" id="place-order-btn" onclick="placeOrder()">
               Place Order
             </button>
-            <p class="checkout-restock-note">By placing your order you agree to our terms of service.</p>
+            <p class="checkout-restock-note" id="place-order-note">By placing your order you agree to our terms of service.</p>
           </div>
 
           <!-- RIGHT: Order Summary -->

@@ -476,33 +476,111 @@ function setMsg(el, text, ok) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   PLACE ORDER — actually complete the purchase
+   PLACE ORDER — submits to Formspree then completes
 ═══════════════════════════════════════════════════════ */
-function placeOrder() {
+async function placeOrder() {
   if (cart.length === 0) return;
 
-  // Deduct stock
-  cart.forEach(item => {
-    if (STOCK[item.productId] !== undefined) {
-      STOCK[item.productId] = Math.max(0, STOCK[item.productId] - item.qty);
-    }
-  });
+  // Collect form fields
+  const email    = document.getElementById('co-email')?.value.trim();
+  const first    = document.getElementById('co-first')?.value.trim();
+  const last     = document.getElementById('co-last')?.value.trim();
+  const address  = document.getElementById('co-address')?.value.trim();
+  const city     = document.getElementById('co-city')?.value.trim();
+  const postcode = document.getElementById('co-postcode')?.value.trim();
+  const country  = document.getElementById('co-country')?.value.trim();
 
-  // Clear cart and discount
-  cart            = [];
-  discountApplied = null;
+  // Basic validation
+  if (!email || !first || !last || !address || !city || !postcode || !country) {
+    const note = document.getElementById('place-order-note');
+    note.textContent = 'Please fill in all fields before placing your order.';
+    note.style.color = '#e3342f';
+    return;
+  }
 
-  renderCart();
-  updateAllStockUI();
+  // Build order summary string
+  const orderLines = cart.map(item => {
+    const colour = item.colour ? ` (${COLOUR_NAMES[item.colour]})` : '';
+    return `${item.name}${colour} x${item.qty} — ${fmt(item.price * item.qty)}`;
+  }).join('\n');
 
-  // Close checkout, show success
-  closeModal('checkout-overlay');
-  showTab('home');
+  const subtotal = getSubtotal();
+  const discount = getDiscount();
+  const total    = getTotal();
 
-  setTimeout(() => {
-    document.getElementById('success-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }, 300);
+  const orderSummary = [
+    orderLines,
+    '',
+    `Subtotal: ${fmt(subtotal)}`,
+    discount > 0 ? `Discount (${discountApplied?.toUpperCase()} 20%): -${fmt(discount)}` : null,
+    `TOTAL: ${fmt(total)}`
+  ].filter(Boolean).join('\n');
+
+  // Disable button while submitting
+  const btn = document.getElementById('place-order-btn');
+  const note = document.getElementById('place-order-note');
+  btn.textContent  = 'Placing Order...';
+  btn.disabled     = true;
+  note.textContent = '';
+  note.style.color = '';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xljjkyoo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject:      `New Voltx Order — ${first} ${last}`,
+        email,
+        name:          `${first} ${last}`,
+        address,
+        city,
+        postcode,
+        country,
+        order_summary: orderSummary,
+        discount_code: discountApplied ? discountApplied.toUpperCase() : 'None',
+        total:         fmt(total)
+      })
+    });
+
+    if (!res.ok) throw new Error('Formspree error');
+
+    // Deduct stock
+    cart.forEach(item => {
+      if (STOCK[item.productId] !== undefined) {
+        STOCK[item.productId] = Math.max(0, STOCK[item.productId] - item.qty);
+      }
+    });
+
+    // Clear state
+    cart            = [];
+    discountApplied = null;
+
+    // Reset form fields
+    ['co-email','co-first','co-last','co-address','co-city','co-postcode','co-country'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    renderCart();
+    updateAllStockUI();
+
+    // Reset button
+    btn.textContent = 'Place Order';
+    btn.disabled    = false;
+
+    // Show success
+    showTab('home');
+    setTimeout(() => {
+      document.getElementById('success-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }, 300);
+
+  } catch {
+    btn.textContent  = 'Place Order';
+    btn.disabled     = false;
+    note.textContent = 'Something went wrong. Please try again.';
+    note.style.color = '#e3342f';
+  }
 }
 
 /* ─── KEYBOARD ──────────────────────────────────────── */
